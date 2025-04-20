@@ -1,6 +1,8 @@
 import type { User } from '../models/User.js';
 import type { Book } from '../models/Book.js';
 
+// NOTE: This code will need to get replaced since we wont be working with a RESTful API structure
+
 // route to get logged in user's info (needs the token)
 export const getMe = (token: string) => {
   return fetch('/api/users/me', {
