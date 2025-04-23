@@ -12,6 +12,9 @@ import dotenv from 'dotenv';
 
 import { fileURLToPath } from 'url';
 
+import { authenticateToken } from './services/auth.js';
+
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -26,6 +29,8 @@ const server = new ApolloServer({
 });
 
 const startApolloServer = async() => {
+  // TODO: Implement MERN authentication
+
   await server.start();
   await db();
 
@@ -37,14 +42,21 @@ const startApolloServer = async() => {
   if (process.env.NODE_ENV === 'production') {
     console.log('We are in production mode!');
     app.use(express.static(path.join(__dirname, '../../client/dist')));
+  
+    app.get('*', (_req, res) => {
+      res.sendFile(path.join(__dirname, '../../client/build/index.html'));
+    });
   }
 
-  // app.get('*', (_req, res) => {
-  //   res.sendFile(path.join(__dirname, '../../client/build/index.html'));
-  // });
+  
 
-  // Important for MERN Setup: Any client-side requests that begin with '/graphql' will be handled by our Apollo Server
-  app.use('/graphql', expressMiddleware(server));
+  // Every graphql route will go through this middleware
+  // Student note: Not every route needs to actually use the context!
+  app.use('/graphql', expressMiddleware(server as any,
+    {
+      context: authenticateToken as any
+    }
+  ));
 
   app.listen(PORT, () => {
     console.log(`API server running on port ${PORT}!`);
