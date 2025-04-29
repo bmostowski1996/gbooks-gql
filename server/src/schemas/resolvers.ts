@@ -21,7 +21,6 @@ const resolvers = {
         // When the user is logged in, this query retrieves info on that user
         me: async (_parent: unknown, _args: unknown, context: ResolverArgs.Context) => {
             if (context.user) {
-                // This is a returning an error because we haven't properly defined our middleware yet...
                 return await User.findOne({ _id: context.user._id});
             };
 

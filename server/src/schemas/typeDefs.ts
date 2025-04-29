@@ -28,6 +28,7 @@ const typeDefs = `
         username: String!
         email: String!
         password: String!
+        savedBooks: [BookInput]
     }  
 
     input BookInput {
